@@ -84,7 +84,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
+            cursor: pointer !important;
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -586,7 +586,7 @@
     </style>
 </head>
 <body>
-    <div id="splash">
+    <div id="splash" onclick="const a=document.getElementById('bg-audio'); if(a) a.play().catch(e=>console.error('Inline play failed', e)); this.style.opacity='0'; this.style.pointerEvents='none'; setTimeout(()=>{this.style.visibility='hidden'},1000); document.querySelectorAll('.main-stack, .player-pill, .volume-pill').forEach(el=>el.classList.add('visible'));">
         <div class="enter-text">CLICK TO ENTER</div>
     </div>
 

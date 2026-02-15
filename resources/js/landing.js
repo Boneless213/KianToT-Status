@@ -1,6 +1,7 @@
-console.log("Cyber-Graffiti JS loaded");
+console.log("landing.js: Script started");
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("landing.js: DOMContentLoaded fired");
     const splash = document.getElementById('splash');
     const audio = document.getElementById('bg-audio');
     const volumeIcon = document.getElementById('volume-icon');
