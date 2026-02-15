@@ -41,10 +41,10 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "APP_KEY": "base64:wo0zXWeD+2pnFpum+evdj/HBYn7Fib6BYfMWPmt1khM=",
         "APP_URL": "https://kiantot.vercel.app",
-        "ASSET_URL": "",
+        "ASSET_URL": "/",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
