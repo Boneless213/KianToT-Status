@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let savedVolume = 0.5;
 
+    // Indicate JS is ready
+    document.body.classList.add('js-ready');
+
     // Set initial volume
     if (audio && volumeSlider) {
         audio.volume = volumeSlider.value;
@@ -26,19 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (splash) {
         splash.addEventListener('click', () => {
             splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
+            splash.style.pointerEvents = 'none';
+            setTimeout(() => {
+                splash.style.visibility = 'hidden';
+            }, 1000);
+
+            // Open all UI components immediately
+            const uiElements = ['.main-stack', '.player-pill', '.volume-pill'];
+            uiElements.forEach(selector => {
+                const el = document.querySelector(selector);
+                if (el) el.classList.add('visible');
+            });
 
             if (audio) {
                 audio.play().then(() => {
                     updatePlayPauseIcon(true);
-
-                    // Fade in all UI components
-                    const uiElements = ['.main-stack', '.player-pill', '.volume-pill'];
-                    uiElements.forEach(selector => {
-                        const el = document.querySelector(selector);
-                        if (el) el.classList.add('visible');
-                    });
-                }).catch(e => console.error("Audio play failed:", e));
+                }).catch(e => {
+                    console.error("Audio play failed:", e);
+                    // Still show UI even if audio fails
+                    updatePlayPauseIcon(false);
+                });
             }
         });
     }

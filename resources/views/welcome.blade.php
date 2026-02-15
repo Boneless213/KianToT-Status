@@ -17,7 +17,7 @@
             --card-border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
+        body.js-ready * {
             cursor: none !important;
         }
 
