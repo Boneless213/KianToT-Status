@@ -2,49 +2,47 @@
     "version": 2,
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.7.1"
+            "runtime": "vercel-php@0.7.2"
         }
     },
-    "rewrites": [
+    "routes": [
         {
-            "source": "/build/(.*)",
-            "destination": "/public/build/$1"
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
         },
         {
-            "source": "/Vids/(.*)",
-            "destination": "/public/Vids/$1"
+            "src": "/Vids/(.*)",
+            "dest": "/public/Vids/$1"
         },
         {
-            "source": "/PICS/(.*)",
-            "destination": "/public/PICS/$1"
+            "src": "/PICS/(.*)",
+            "dest": "/public/PICS/$1"
         },
         {
-            "source": "/GIF/(.*)",
-            "destination": "/public/GIF/$1"
+            "src": "/GIF/(.*)",
+            "dest": "/public/GIF/$1"
         },
         {
-            "source": "/favicon.ico",
-            "destination": "/public/favicon.ico"
+            "src": "/favicon.ico",
+            "dest": "/public/favicon.ico"
         },
         {
-            "source": "/robots.txt",
-            "destination": "/public/robots.txt"
+            "src": "/robots.txt",
+            "dest": "/public/robots.txt"
         },
         {
-            "source": "/(css|js)/(.*)",
-            "destination": "/public/$1/$2"
+            "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|ico|svg|mp4|webm|woff|woff2|ttf|eot)$",
+            "dest": "/public/$1.$2"
         },
         {
-            "source": "/(.*)",
-            "destination": "/api/index.php"
+            "src": "/(.*)",
+            "dest": "/api/index.php"
         }
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_KEY": "base64:wo0zXWeD+2pnFpum+evdj/HBYn7Fib6BYfMWPmt1khM=",
-        "APP_URL": "https://kiantot.vercel.app",
-        "ASSET_URL": "/",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
