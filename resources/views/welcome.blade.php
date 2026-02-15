@@ -7,6 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Syne:wght@700;800&family=Sedgwick+Ave+Display&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName) {
+                console.error(`Asset failed to load: ${e.target.src || e.target.href} (Tag: ${e.target.tagName})`);
+            }
+        }, true);
+        console.log("Diagnostics: Base URL is " + window.location.origin);
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
