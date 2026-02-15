@@ -7,6 +7,10 @@
     },
     "routes": [
         {
+            "src": "/api/debug_files",
+            "dest": "/api/debug_files.php"
+        },
+        {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
         },
