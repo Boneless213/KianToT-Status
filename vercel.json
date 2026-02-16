@@ -7,6 +7,9 @@
     },
     "rewrites": [
         {
+            "handle": "filesystem"
+        },
+        {
             "source": "/api/check_cache",
             "destination": "/api/check_cache.php"
         },
