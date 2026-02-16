@@ -1,4 +1,5 @@
 <?php
+echo "APP IS RUNNING - ";
 echo "<!-- PHP RUNTIME ACTIVE -->";
 
 // Force error reporting
