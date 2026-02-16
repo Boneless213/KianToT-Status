@@ -1,4 +1,5 @@
 <?php
+echo "<!-- PHP RUNTIME ACTIVE -->";
 
 // Force error reporting
 error_reporting(E_ALL);
