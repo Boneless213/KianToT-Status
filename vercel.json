@@ -3,23 +3,20 @@
     "functions": {
         "api/*.php": {
             "runtime": "vercel-php@0.7.2"
-        },
-        "public/index.php": {
-            "runtime": "vercel-php@0.7.2"
         }
     },
-    "rewrites": [
+    "routes": [
         {
-            "source": "/api/debug_files",
-            "destination": "/api/debug_files.php"
+            "src": "/api/debug_files",
+            "dest": "/api/debug_files.php"
         },
         {
-            "source": "/(build|Vids|PICS|GIF|favicon.ico|robots.txt|test_static.txt)(.*)",
-            "destination": "/public/$1$2"
+            "src": "/(build|Vids|PICS|GIF|favicon.ico|robots.txt|test_static.txt)(.*)",
+            "dest": "/public/$1$2"
         },
         {
-            "source": "/(.*)",
-            "destination": "/public/index.php"
+            "src": "/(.*)",
+            "dest": "/api/index.php"
         }
     ],
     "env": {
