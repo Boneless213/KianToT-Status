@@ -1,53 +1,45 @@
 <?php
 
-use Illuminate\Http\Request;
+// THE LUNAR TEST - STEP BY STEP
+echo "1. PHP ALIVE<br>";
 
-define('LARAVEL_START', microtime(true));
-
-// 1. Diagnostics and error reporting
+// Force errors to show immediately
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-// 2. Load Autoloader
-if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    echo "<h1>CRITICAL ERROR</h1>";
-    echo "Vendor folder is missing. This means Composer did not run. <br>";
-    echo "Current directory: " . __DIR__ . "<br>";
-    echo "Trying to list parent directory: <pre>";
+$autoload = __DIR__ . '/../vendor/autoload.php';
+echo "2. CHECKING AUTOLOAD: " . (file_exists($autoload) ? "FOUND" : "MISSING") . "<br>";
+
+if (file_exists($autoload)) {
+    require $autoload;
+    echo "3. AUTOLOAD LOADED<br>";
+} else {
+    echo "3. CANNOT PROCEED - VENDOR MISSING<br>";
+    echo "DIRECTORIES IN ROOT: <pre>";
     print_r(scandir(__DIR__ . '/..'));
     echo "</pre>";
     die();
 }
-require __DIR__ . '/../vendor/autoload.php';
-
-// 3. Prepare writable storage
-$storagePath = '/tmp/storage';
-if (!is_dir($storagePath)) {
-    @mkdir($storagePath, 0755, true);
-    @mkdir($storagePath . '/framework/views', 0755, true);
-    @mkdir($storagePath . '/framework/sessions', 0755, true);
-    @mkdir($storagePath . '/framework/cache', 0755, true);
-    @mkdir($storagePath . '/framework/cache/data', 0755, true);
-    @mkdir($storagePath . '/logs', 0755, true);
-}
 
 try {
-    // 4. Manual path overrides BEFORE boot
-    putenv("APP_CONFIG_CACHE=$storagePath/framework/cache/config.php");
-    putenv("APP_ROUTES_CACHE=$storagePath/framework/cache/routes.php");
-    putenv("VIEW_COMPILED_PATH=$storagePath/framework/views");
-
+    echo "4. BOOTING APP...<br>";
     $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $app->useStoragePath($storagePath);
+    echo "5. APP INSTANCE CREATED<br>";
 
-    $request = Request::capture();
+    $storagePath = '/tmp/storage';
+    foreach (['', '/framework', '/framework/views', '/framework/sessions', '/framework/cache', '/framework/cache/data', '/logs'] as $dir) {
+        if (!is_dir($storagePath . $dir)) @mkdir($storagePath . $dir, 0755, true);
+    }
+    $app->useStoragePath($storagePath);
+    echo "6. STORAGE READY<br>";
+
+    $request = Illuminate\Http\Request::capture();
     $response = $app->handleRequest($request);
+    echo "7. REQUEST HANDLED<br>";
+
     $response->send();
-    $app->terminate($request, $response);
+    echo "8. DONE";
 } catch (\Throwable $e) {
-    http_response_code(500);
-    echo "<h1>Laravel Initialization Error</h1>";
-    echo "<p><b>Message:</b> " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p><b>File:</b> " . $e->getFile() . " on line " . $e->getLine() . "</p>";
-    echo "<h3>Stack Trace:</h3><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    echo "<h1>CAUGHT ERROR:</h1>" . $e->getMessage();
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
 }
