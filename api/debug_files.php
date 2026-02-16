@@ -14,6 +14,12 @@ if (is_dir($publicDir)) {
         echo "\nBuild directory contents:\n";
         print_r(scandir($buildDir));
 
+        $manifestPath = $buildDir . '/manifest.json';
+        if (file_exists($manifestPath)) {
+            echo "\nManifest content:\n";
+            echo file_get_contents($manifestPath) . "\n";
+        }
+
         $assetsDir = $buildDir . '/assets';
         if (is_dir($assetsDir)) {
             echo "\nAssets directory contents:\n";

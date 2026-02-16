@@ -5,18 +5,42 @@
             "runtime": "vercel-php@0.7.2"
         }
     },
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/debug_files",
-            "dest": "/api/debug_files.php"
+            "source": "/api/debug_files",
+            "destination": "/api/debug_files.php"
         },
         {
-            "src": "/(build|Vids|PICS|GIF|favicon.ico|robots.txt|test_static.txt)(.*)",
-            "dest": "/public/$1$2"
+            "source": "/build/:path*",
+            "destination": "/public/build/:path*"
         },
         {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
+            "source": "/Vids/:path*",
+            "destination": "/public/Vids/:path*"
+        },
+        {
+            "source": "/PICS/:path*",
+            "destination": "/public/PICS/:path*"
+        },
+        {
+            "source": "/GIF/:path*",
+            "destination": "/public/GIF/:path*"
+        },
+        {
+            "source": "/favicon.ico",
+            "destination": "/public/favicon.ico"
+        },
+        {
+            "source": "/robots.txt",
+            "destination": "/public/robots.txt"
+        },
+        {
+            "source": "/test_static.txt",
+            "destination": "/public/test_static.txt"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/api/index.php"
         }
     ],
     "env": {
