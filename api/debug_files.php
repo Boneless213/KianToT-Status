@@ -1,32 +1,29 @@
 <?php
 header('Content-Type: text/plain');
-echo "Current directory: " . __DIR__ . "\n";
-echo "Root directory contents:\n";
-print_r(scandir(__DIR__ . '/..'));
 
-$publicDir = __DIR__ . '/../public';
-if (is_dir($publicDir)) {
-    echo "\nPublic directory contents:\n";
-    print_r(scandir($publicDir));
+echo "REMOTE DEBUG START\n";
+echo "PHP: " . PHP_VERSION . "\n";
+echo "Dir: " . __DIR__ . "\n";
 
-    $buildDir = $publicDir . '/build';
-    if (is_dir($buildDir)) {
-        echo "\nBuild directory contents:\n";
-        print_r(scandir($buildDir));
+function scan($path, $level = 0)
+{
+    if ($level > 3)
+        return;
+    if (!is_dir($path))
+        return;
 
-        $manifestPath = $buildDir . '/manifest.json';
-        if (file_exists($manifestPath)) {
-            echo "\nManifest content:\n";
-            echo file_get_contents($manifestPath) . "\n";
-        }
-
-        $assetsDir = $buildDir . '/assets';
-        if (is_dir($assetsDir)) {
-            echo "\nAssets directory contents:\n";
-            print_r(scandir($assetsDir));
-        }
+    $items = scandir($path);
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..')
+            continue;
+        $full = $path . '/' . $item;
+        echo str_repeat("  ", $level) . (is_dir($full) ? "[D] " : "[F] ") . $item . "\n";
+        if (is_dir($full))
+            scan($full, $level + 1);
     }
 }
-else {
-    echo "\nPUBLIC DIRECTORY NOT FOUND at $publicDir\n";
-}
+
+echo "\n--- Structure ---\n";
+scan(realpath(__DIR__ . '/..'));
+
+echo "\nREMOTE DEBUG END\n";
