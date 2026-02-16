@@ -7,6 +7,10 @@
     },
     "rewrites": [
         {
+            "source": "/api/check_cache",
+            "destination": "/api/check_cache.php"
+        },
+        {
             "source": "/api/debug_files",
             "destination": "/api/debug_files.php"
         },
