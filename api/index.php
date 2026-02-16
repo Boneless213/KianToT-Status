@@ -1,12 +1,17 @@
 <?php
 
-use Illuminate\Http\Request;
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-define('LARAVEL_START', microtime(true));
+echo "STEP 1: Starting...<br>";
+
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    die("STEP 1.5: Vendor folder is missing!");
+}
 
 require __DIR__ . '/../vendor/autoload.php';
+echo "STEP 2: Autoloaded.<br>";
 
-// Prepare writable storage
 $storagePath = '/tmp/storage';
 if (!is_dir($storagePath)) {
     @mkdir($storagePath, 0755, true);
@@ -18,18 +23,25 @@ if (!is_dir($storagePath)) {
 }
 
 try {
+    echo "STEP 3: Booting bootstrap/app.php...<br>";
     $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $app->useStoragePath($storagePath);
+    echo "STEP 4: App instance created.<br>";
 
+    $app->useStoragePath($storagePath);
+    echo "STEP 5: Storage path set.<br>";
+
+    use Illuminate\Http\Request;
     $request = Request::capture();
+    echo "STEP 6: Request captured.<br>";
+
     $response = $app->handleRequest($request);
+    echo "STEP 7: Response generated.<br>";
+
     $response->send();
-    $app->terminate($request, $response);
+    echo "STEP 8: Finished!";
+    
 } catch (\Throwable $e) {
-    // If it still crashes, let's see why
-    http_response_code(500);
-    echo "<h1>Laravel Initialization Error</h1>";
-    echo "<p><b>Message:</b> " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p><b>File:</b> " . $e->getFile() . " on line " . $e->getLine() . "</p>";
-    echo "<h3>Stack Trace:</h3><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    echo "<h1>CRASH AT STEP " . __LINE__ . "</h1>";
+    echo "<b>Error:</b> " . $e->getMessage() . "<br>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
 }
