@@ -49,6 +49,9 @@
         "APP_KEY": "base64:wo0zXWeD+2pnFpum+evdj/HBYn7Fib6BYfMWPmt1khM=",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
-        "CACHE_STORE": "array"
+        "CACHE_STORE": "array",
+        "APP_STORAGE": "/tmp/storage",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+        "SESSION_LIFETIME": "120"
     }
 }
