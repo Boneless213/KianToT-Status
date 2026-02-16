@@ -1,60 +1,31 @@
 {
     "version": 2,
     "functions": {
-        "api/index.php": {
+        "api/*.php": {
+            "runtime": "vercel-php@0.7.2"
+        },
+        "public/index.php": {
             "runtime": "vercel-php@0.7.2"
         }
     },
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/debug_files",
-            "dest": "/api/debug_files.php"
+            "source": "/api/debug_files",
+            "destination": "/api/debug_files.php"
         },
         {
-            "src": "/build/(.*)",
-            "dest": "/public/build/$1"
+            "source": "/(build|Vids|PICS|GIF|favicon.ico|robots.txt|test_static.txt)(.*)",
+            "destination": "/public/$1$2"
         },
         {
-            "src": "/Vids/(.*)",
-            "dest": "/public/Vids/$1"
-        },
-        {
-            "src": "/PICS/(.*)",
-            "dest": "/public/PICS/$1"
-        },
-        {
-            "src": "/GIF/(.*)",
-            "dest": "/public/GIF/$1"
-        },
-        {
-            "src": "/favicon.ico",
-            "dest": "/public/favicon.ico"
-        },
-        {
-            "src": "/robots.txt",
-            "dest": "/public/robots.txt"
-        },
-        {
-            "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|ico|svg|mp4|webm|woff|woff2|ttf|eot)$",
-            "dest": "/public/$1.$2"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
+            "source": "/(.*)",
+            "destination": "/public/index.php"
         }
     ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_KEY": "base64:wo0zXWeD+2pnFpum+evdj/HBYn7Fib6BYfMWPmt1khM=",
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp",
-        "CACHE_STORE": "array",
-        "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr"
     }
 }
