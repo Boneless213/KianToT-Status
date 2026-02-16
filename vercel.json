@@ -1,25 +1,14 @@
 {
     "version": 2,
     "functions": {
-        "api/*.php": {
+        "api/index.php": {
             "runtime": "vercel-php@0.7.1"
         }
     },
     "routes": [
         {
-            "src": "/(build/.*|PICS/.*|GIF/.*|Vids/.*|favicon.ico|robots.txt)",
-            "dest": "/public/$1"
-        },
-        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ],
-    "env": {
-        "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie",
-        "CACHE_STORE": "array",
-        "DB_CONNECTION": "null",
-        "APP_DEBUG": "true"
-    }
+    ]
 }
