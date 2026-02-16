@@ -20,10 +20,12 @@
         "APP_EVENTS_CACHE": "/tmp/storage/framework/cache/events.php",
         "APP_PACKAGES_CACHE": "/tmp/storage/framework/cache/packages.php",
         "APP_ROUTES_CACHE": "/tmp/storage/framework/cache/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/storage/framework/cache/services.php",
         "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
         "CACHE_STORE": "array",
-        "DB_CONNECTION": "null"
+        "DB_CONNECTION": "null",
+        "APP_DEBUG": "true"
     }
 }

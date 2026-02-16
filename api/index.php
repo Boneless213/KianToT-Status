@@ -1,45 +1,58 @@
 <?php
 
-// THE LUNAR TEST - STEP BY STEP
-echo "1. PHP ALIVE<br>";
+use Illuminate\Http\Request;
 
-// Force errors to show immediately
+// 1. Force the absolute most critical environment variables for Vercel
+// These MUST be set before the autoloader runs in some cases
+$tmpStorage = '/tmp/storage';
+if (!is_dir($tmpStorage)) {
+    @mkdir($tmpStorage, 0755, true);
+    @mkdir($tmpStorage . '/framework/views', 0755, true);
+    @mkdir($tmpStorage . '/framework/sessions', 0755, true);
+    @mkdir($tmpStorage . '/framework/cache', 0755, true);
+    @mkdir($tmpStorage . '/framework/cache/data', 0755, true);
+    @mkdir($tmpStorage . '/logs', 0755, true);
+}
+
+// Redirect all possible writable paths to /tmp
+putenv("APP_CONFIG_CACHE=$tmpStorage/framework/cache/config.php");
+putenv("APP_ROUTES_CACHE=$tmpStorage/framework/cache/routes.php");
+putenv("APP_SERVICES_CACHE=$tmpStorage/framework/cache/services.php");
+putenv("APP_PACKAGES_CACHE=$tmpStorage/framework/cache/packages.php");
+putenv("VIEW_COMPILED_PATH=$tmpStorage/framework/views");
+putenv("LOG_CHANNEL=stderr");
+putenv("SESSION_DRIVER=cookie");
+putenv("CACHE_STORE=array");
+
+// Force error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-$autoload = __DIR__ . '/../vendor/autoload.php';
-echo "2. CHECKING AUTOLOAD: " . (file_exists($autoload) ? "FOUND" : "MISSING") . "<br>";
+define('LARAVEL_START', microtime(true));
 
-if (file_exists($autoload)) {
-    require $autoload;
-    echo "3. AUTOLOAD LOADED<br>";
-} else {
-    echo "3. CANNOT PROCEED - VENDOR MISSING<br>";
-    echo "DIRECTORIES IN ROOT: <pre>";
-    print_r(scandir(__DIR__ . '/..'));
-    echo "</pre>";
-    die();
-}
+// 2. Load Autoloader
+require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    echo "4. BOOTING APP...<br>";
+    // 3. Boot Laravel
     $app = require_once __DIR__ . '/../bootstrap/app.php';
-    echo "5. APP INSTANCE CREATED<br>";
+    
+    // Explicitly set the storage path again
+    $app->useStoragePath($tmpStorage);
 
-    $storagePath = '/tmp/storage';
-    foreach (['', '/framework', '/framework/views', '/framework/sessions', '/framework/cache', '/framework/cache/data', '/logs'] as $dir) {
-        if (!is_dir($storagePath . $dir)) @mkdir($storagePath . $dir, 0755, true);
-    }
-    $app->useStoragePath($storagePath);
-    echo "6. STORAGE READY<br>";
-
-    $request = Illuminate\Http\Request::capture();
+    // 4. Handle Request
+    $request = Request::capture();
     $response = $app->handleRequest($request);
-    echo "7. REQUEST HANDLED<br>";
-
     $response->send();
-    echo "8. DONE";
+    $app->terminate($request, $response);
+
 } catch (\Throwable $e) {
-    echo "<h1>CAUGHT ERROR:</h1>" . $e->getMessage();
-    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    // If it still crashes, we need to know why without relying on Laravel's view engine
+    header('Content-Type: text/plain');
+    echo "VERCEL BOOT ERROR\n";
+    echo "=================\n";
+    echo "Message: " . $e->getMessage() . "\n";
+    echo "File: " . $e->getFile() . "\n";
+    echo "Line: " . $e->getLine() . "\n\n";
+    echo "Trace:\n" . $e->getTraceAsString();
 }
