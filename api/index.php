@@ -23,16 +23,14 @@ try {
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($storagePath);
 
-    // 4. Final Handle
-    $request = Request::capture();
-    $response = $app->handleRequest($request);
-    $response->send();
-    $app->terminate($request, $response);
+    // 4. Handle Request
+    // In Laravel 11/12, handleRequest() sends the response and terminates the app itself.
+    $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
-    // Only show errors if explicitly debugging
     if (env('APP_DEBUG')) {
         echo "<h1>Initialization Error</h1>";
         echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
     } else {
         http_response_code(500);
         die("Internal Server Error");
