@@ -1,7 +1,17 @@
 <?php
 
-// Vercel doesn't always set the document root correctly
-$_SERVER['SCRIPT_NAME'] = '/index.php';
+// Force error reporting to catch the white screen
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-// Forward to the real index
-require __DIR__ . '/../public/index.php';
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+// Register the Composer autoloader...
+require __DIR__ . '/../vendor/autoload.php';
+
+// Bootstrap Laravel and handle the request...
+$app = (require_once __DIR__ . '/../bootstrap/app.php');
+
+$app->handleRequest(Request::capture());
