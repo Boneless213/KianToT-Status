@@ -675,7 +675,7 @@
         </div>
         <div class="player-content">
             <div class="track-info-row">
-                <span class="track-name">Deamin</span>
+                <span class="track-name">Dreamin</span>
                 <div class="track-time-wrap">
                     <span class="track-time" id="current-time">0:00</span>
                     <span class="track-time" style="opacity: 0.3; margin: 0 4px;">/</span>
