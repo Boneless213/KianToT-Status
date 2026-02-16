@@ -16,10 +16,13 @@
         }
     ],
     "env": {
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "VIEW_COMPILED_PATH": "/tmp/views"
+        "APP_CONFIG_CACHE": "/tmp/storage/framework/cache/config.php",
+        "APP_EVENTS_CACHE": "/tmp/storage/framework/cache/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/storage/framework/cache/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/storage/framework/cache/routes.php",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "CACHE_STORE": "array"
     }
 }
