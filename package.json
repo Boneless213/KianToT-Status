@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "vercel-build": "yum install -y php-cli php-mbstring php-xml php-bcmath php-json composer && composer install --no-dev"
+        "vercel-build": "composer install --no-dev && npm run build"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
