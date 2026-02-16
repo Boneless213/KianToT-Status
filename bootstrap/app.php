@@ -14,10 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->reportable(function (Throwable $e) {
-            if (isset($_SERVER['VERCEL_URL'])) {
-                error_log($e->getMessage());
-            }
-        });
+        //
     })
     ->create();
