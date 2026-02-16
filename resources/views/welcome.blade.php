@@ -14,6 +14,9 @@
             }
         }, true);
         console.log("Diagnostics: Base URL is " + window.location.origin);
+        console.log("Diagnostics: APP_URL is {{ config('app.url') }}");
+        console.log("Diagnostics: ASSET_URL is {{ asset('/') }}");
+        console.log("Diagnostics: Sample PICS URL is {{ asset('PICS/image.png') }}");
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
