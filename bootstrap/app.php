@@ -29,10 +29,6 @@ if (isset($_SERVER['VERCEL_URL']) || env('APP_ENV') === 'production') {
         @mkdir($path . '/framework/cache/data', 0755, true);
     }
     $app->useStoragePath($path);
-    
-    // Force some config values for serverless
-    config(['session.driver' => 'cookie']);
-    config(['cache.default' => 'file']);
 }
 
 return $app;
