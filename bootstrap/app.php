@@ -20,6 +20,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
 if (isset($_SERVER['VERCEL_URL']) || env('APP_ENV') === 'production') {
     $path = '/tmp/storage';
+    // Create directory structure if it doesn't exist
     if (!is_dir($path)) {
         @mkdir($path, 0755, true);
         @mkdir($path . '/framework/views', 0755, true);
@@ -28,6 +29,10 @@ if (isset($_SERVER['VERCEL_URL']) || env('APP_ENV') === 'production') {
         @mkdir($path . '/framework/cache/data', 0755, true);
     }
     $app->useStoragePath($path);
+    
+    // Force some config values for serverless
+    config(['session.driver' => 'cookie']);
+    config(['cache.default' => 'file']);
 }
 
 return $app;
