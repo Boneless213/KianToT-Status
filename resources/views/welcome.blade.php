@@ -37,11 +37,11 @@
             background-color: var(--bg-dark);
             color: white;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         /* Custom Cursor */
@@ -118,14 +118,56 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 1rem;
             z-index: 10;
             opacity: 0;
             visibility: hidden;
             transition: opacity 1s ease, visibility 1s ease;
+            min-height: 100vh;
+            width: 100%;
         }
 
         .main-stack.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Scroll Helper Content */
+        .scroll-content {
+            display: flex;
+            flex-direction: column; /* Stack title and cards vertically */
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+            padding-bottom: 100px;
+            width: 100%;
+            margin-top: 30vh;
+        }
+
+        .cards-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 10px var(--accent);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            transform: none; /* Removed rotation for cleaner look */
+        }
+
+        .scroll-content.visible {
             opacity: 1;
             visibility: visible;
         }
@@ -326,7 +368,6 @@
             filter: drop-shadow(0 0 5px var(--accent));
         }
 
-        /* Music Player - Redesigned Floating Aesthetic */
         .player-pill {
             position: fixed;
             bottom: 30px;
@@ -334,11 +375,11 @@
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px; /* Reduced gap */
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 12px 24px;
+            padding: 8px 16px; /* Smaller padding */
             border-radius: 100px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: fit-content;
@@ -364,8 +405,8 @@
 
         .player-art-wrap {
             position: relative;
-            width: 50px;
-            height: 50px;
+            width: 40px; /* Smaller art */
+            height: 40px;
             flex-shrink: 0;
         }
 
@@ -396,8 +437,8 @@
         .player-content {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            min-width: 400px;
+            gap: 4px;
+            min-width: 300px; /* Increased slightly */
         }
 
         .track-info-row {
@@ -407,10 +448,10 @@
         }
 
         .track-name {
-            font-size: 1.1rem;
+            font-size: 0.9rem; /* Smaller font */
             font-weight: 400;
             color: white;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             font-family: 'Sedgwick Ave Display', cursive;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
@@ -594,12 +635,36 @@
             background: rgba(255,255,255,0.05);
         }
 
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.4);
+            z-index: 999;
+            pointer-events: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); /* Subtle purple glow */
+            font-weight: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .watermark.visible {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
-    <div id="splash" onclick="const a=document.getElementById('bg-audio'); if(a) a.play().catch(e=>console.error('Inline play failed', e)); this.style.opacity='0'; this.style.pointerEvents='none'; setTimeout(()=>{this.style.visibility='hidden'},1000); document.querySelectorAll('.main-stack, .player-pill, .volume-pill').forEach(el=>el.classList.add('visible'));">
+    <div id="splash" onclick="const a=document.getElementById('bg-audio'); if(a) a.play().catch(e=>console.error('Inline play failed', e)); this.style.opacity='0'; this.style.pointerEvents='none'; setTimeout(()=>{this.style.visibility='hidden'},1000); document.querySelectorAll('.main-stack, .player-pill, .volume-pill, .watermark, .scroll-content').forEach(el=>el.classList.add('visible'));">
         <div class="enter-text">CLICK TO ENTER</div>
     </div>
+
+    <div class="watermark">Made by Kian</div>
 
     <div class="gif-bg"></div>
     <div class="overlay"></div>
@@ -667,6 +732,59 @@
                 </svg>
             </a>
         </div>
+    </div>
+    
+    <div class="scroll-content">
+        <h2 class="section-title">BROS</h2>
+        
+        <div class="cards-row">
+            <!-- Additional Status Container 1 (User: 992264873453027350) -->
+            <div class="bio-card">
+                <div class="avatar-wrap">
+                    <img src="" id="bro1-avatar" class="avatar" alt="Avatar">
+                    <div class="status-dot" id="bro1-status-dot"></div>
+                </div>
+                <div class="user-info">
+                    <div class="username-row">
+                        <span class="username" id="bro1-global-name">Loading...</span>
+                        <span class="user-tag" id="bro1-tag"></span>
+                        <div class="clan-tag-container" id="bro1-clan-container">
+                            <img src="" class="clan-badge" id="bro1-clan-badge">
+                            <span class="clan-tag-text" id="bro1-clan-tag-text"></span>
+                        </div>
+                    </div>
+                    <div class="badges-container" id="bro1-badges">
+                        <!-- Badges -->
+                    </div>
+                    <div class="status-text" id="bro1-status-text">Loading...</div>
+                    <div class="activity-display" id="bro1-activity"></div>
+                </div>
+            </div>
+
+            <!-- Additional Status Container 2 (User: 717415880103034891) -->
+            <div class="bio-card">
+                <div class="avatar-wrap">
+                    <img src="" id="bro2-avatar" class="avatar" alt="Avatar">
+                    <div class="status-dot" id="bro2-status-dot"></div>
+                </div>
+                <div class="user-info">
+                    <div class="username-row">
+                        <span class="username" id="bro2-global-name">Loading...</span>
+                        <span class="user-tag" id="bro2-tag"></span>
+                        <div class="clan-tag-container" id="bro2-clan-container">
+                            <img src="" class="clan-badge" id="bro2-clan-badge">
+                            <span class="clan-tag-text" id="bro2-clan-tag-text"></span>
+                        </div>
+                    </div>
+                    <div class="badges-container" id="bro2-badges">
+                        <!-- Badges -->
+                    </div>
+                    <div class="status-text" id="bro2-status-text">Loading...</div>
+                    <div class="activity-display" id="bro2-activity"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 
     <div class="player-pill" id="player-pill">

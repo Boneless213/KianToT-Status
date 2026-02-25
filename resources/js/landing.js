@@ -159,16 +159,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Discord Presence Integration
-    const discordAvatar = document.getElementById('discord-avatar');
-    const discordStatusDot = document.getElementById('discord-status-dot');
-    const discordStatusText = document.getElementById('discord-status-text');
-    const discordActivity = document.getElementById('discord-activity');
-    const discordGlobalName = document.getElementById('discord-global-name');
-    const discordTag = document.getElementById('discord-tag');
-    const discordBadges = document.getElementById('discord-badges');
-    const discordClanContainer = document.getElementById('discord-clan-container');
-    const discordClanBadge = document.getElementById('discord-clan-badge');
-    const discordClanTagText = document.getElementById('discord-clan-tag-text');
+    const USERS_TO_MONITOR = [
+        {
+            id: '855694452315652096', // Kian
+            fallbackName: 'KianToT',
+            fallbackUsername: 'kiantot',
+            elements: {
+                avatar: 'discord-avatar',
+                statusDot: 'discord-status-dot',
+                statusText: 'discord-status-text',
+                activity: 'discord-activity',
+                globalName: 'discord-global-name',
+                tag: 'discord-tag',
+                badges: 'discord-badges',
+                clanContainer: 'discord-clan-container',
+                clanBadge: 'discord-clan-badge',
+                clanTagText: 'discord-clan-tag-text'
+            }
+        },
+        {
+            id: '992264873453027350', // Bro 1
+            fallbackName: '₱',
+            fallbackUsername: '116.65.36.216',
+            elements: {
+                avatar: 'bro1-avatar',
+                statusDot: 'bro1-status-dot',
+                statusText: 'bro1-status-text',
+                activity: 'bro1-activity',
+                globalName: 'bro1-global-name',
+                tag: 'bro1-tag',
+                badges: 'bro1-badges',
+                clanContainer: 'bro1-clan-container',
+                clanBadge: 'bro1-clan-badge',
+                clanTagText: 'bro1-clan-tag-text'
+            }
+        },
+        {
+            id: '687983215880699905', // Bro 2
+            fallbackName: 'Bro 2',
+            fallbackUsername: '687983215880699905',
+            elements: {
+                avatar: 'bro2-avatar',
+                statusDot: 'bro2-status-dot',
+                statusText: 'bro2-status-text',
+                activity: 'bro2-activity',
+                globalName: 'bro2-global-name',
+                tag: 'bro2-tag',
+                badges: 'bro2-badges',
+                clanContainer: 'bro2-clan-container',
+                clanBadge: 'bro2-clan-badge',
+                clanTagText: 'bro2-clan-tag-text'
+            }
+        }
+    ];
 
     const BADGE_MAPPING = {
         1: "https://cdn.jsdelivr.net/gh/mezotv/discord-badges@main/assets/discordstaff.svg",
@@ -184,88 +227,151 @@ document.addEventListener('DOMContentLoaded', () => {
         4194304: "https://cdn.jsdelivr.net/gh/mezotv/discord-badges@main/assets/activedeveloper.svg"
     };
 
-    async function updateDiscordPresence() {
+    async function fetchDiscordData(userId, config, fallbackName, fallbackUsername) {
         try {
-            // Dual-Fetch for maximum accuracy
-            const [lanyardRes, profileRes] = await Promise.all([
-                fetch('https://api.lanyard.rest/v1/users/855694452315652096').then(r => r.json()),
-                fetch('https://dcdn.dstn.to/profile/855694452315652096').then(r => r.json())
+            const [lanyardRes, profileRes, japiRes] = await Promise.allSettled([
+                fetch(`https://api.lanyard.rest/v1/users/${userId}`).then(r => {
+                    if (!r.ok) throw new Error(`Lanyard returned ${r.status}`);
+                    return r.json();
+                }),
+                fetch(`https://dcdn.dstn.to/profile/${userId}`).then(r => {
+                    if (!r.ok) throw new Error(`dcdn returned ${r.status}`);
+                    return r.json();
+                }),
+                fetch(`https://japi.rest/discord/v1/user/${userId}`).then(r => {
+                    if (!r.ok) throw new Error(`japi returned ${r.status}`);
+                    return r.json();
+                })
             ]);
 
-            const lanyard = lanyardRes.data;
-            const profile = profileRes.user;
-            const profileBadges = profileRes.badges;
+            const lanyard = lanyardRes.status === 'fulfilled' && lanyardRes.value && lanyardRes.value.success ? lanyardRes.value.data : null;
+            const profileData = profileRes.status === 'fulfilled' ? profileRes.value : null;
+            const profile = profileData && profileData.user ? profileData.user : null;
+            const profileBadges = profileData && profileData.badges ? profileData.badges : null;
+            const profilePremium = profileData && profileData.premium_type ? profileData.premium_type : 0;
 
-            if (!lanyard || !profile) return;
+            // japi.rest fallback data
+            const japiData = japiRes.status === 'fulfilled' && japiRes.value && japiRes.value.data ? japiRes.value.data : null;
+            const japiFlags = japiData && japiData.public_flags_array ? japiData.public_flags_array : [];
+            const japiHasNitro = japiFlags.includes('NITRO');
 
-            // 1. Update Status Dot (from Lanyard - Live)
-            if (discordStatusDot) {
-                discordStatusDot.className = 'status-dot ' + lanyard.discord_status;
+            // Elements
+            const avatarEl = document.getElementById(config.avatar);
+            const statusDotEl = document.getElementById(config.statusDot);
+            const statusTextEl = document.getElementById(config.statusText);
+            const activityEl = document.getElementById(config.activity);
+            const nameEl = document.getElementById(config.globalName);
+            const tagEl = document.getElementById(config.tag);
+            const badgesEl = document.getElementById(config.badges);
+            const clanContainerEl = document.getElementById(config.clanContainer);
+            const clanBadgeEl = document.getElementById(config.clanBadge);
+            const clanTagTextEl = document.getElementById(config.clanTagText);
+
+            // 1. Status Dot & Text (Lanyard dependent)
+            let status = 'offline';
+            if (lanyard && lanyard.discord_status) {
+                status = lanyard.discord_status;
             }
 
-            // 2. Update Status Text (from Lanyard)
-            if (discordStatusText) {
-                if (lanyard.discord_status === 'offline') {
-                    discordStatusText.textContent = 'Last seen moments ago';
+            if (statusDotEl) statusDotEl.className = 'status-dot ' + status;
+
+            if (statusTextEl) {
+                if (status === 'offline') {
+                    statusTextEl.textContent = 'Last seen moments ago';
                 } else {
-                    discordStatusText.textContent = lanyard.discord_status.toUpperCase();
+                    statusTextEl.textContent = status.toUpperCase();
                 }
             }
 
-            // 3. Update Names (from Profile API - Stable)
-            if (discordGlobalName) discordGlobalName.textContent = profile.global_name || profile.username;
-            if (discordTag) discordTag.textContent = `@${profile.username}`;
-
-            // 4. Update Clan Tag (from Profile API)
-            if (discordClanContainer && profile.clan) {
-                discordClanContainer.style.display = 'inline-flex';
-                if (discordClanBadge) discordClanBadge.src = `https://cdn.discordapp.com/clan-badges/${profile.clan.identity_guild_id}/${profile.clan.badge}.png`;
-                if (discordClanTagText) discordClanTagText.textContent = profile.clan.tag;
-            } else {
-                discordClanContainer.style.display = 'none';
+            // 2. Names (Profile > Lanyard > japi.rest > fallback)
+            if (profile) {
+                if (nameEl) nameEl.textContent = profile.global_name || profile.username;
+                if (tagEl) tagEl.textContent = `@${profile.username}`;
+            } else if (lanyard && lanyard.discord_user) {
+                if (nameEl) nameEl.textContent = lanyard.discord_user.display_name || lanyard.discord_user.global_name || lanyard.discord_user.username;
+                if (tagEl) tagEl.textContent = `@${lanyard.discord_user.username}`;
+            } else if (japiData) {
+                if (nameEl) nameEl.textContent = japiData.global_name || japiData.username;
+                if (tagEl) tagEl.textContent = `@${japiData.username}`;
+            } else if (nameEl && (!nameEl.textContent || nameEl.textContent === 'Loading...')) {
+                nameEl.textContent = fallbackName || 'Unknown User';
+                if (tagEl) tagEl.textContent = fallbackUsername ? `@${fallbackUsername}` : '';
             }
 
-            // 5. Update Avatar
-            if (discordAvatar && profile.avatar) {
-                discordAvatar.src = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`;
+            // 4. Clan Tag
+            if (clanContainerEl) {
+                const clanData = (profile && profile.clan) || (lanyard && lanyard.discord_user && lanyard.discord_user.primary_guild) || (japiData && (japiData.clan || japiData.primary_guild));
+                if (clanData && clanData.tag) {
+                    clanContainerEl.style.display = 'inline-flex';
+                    if (clanBadgeEl && clanData.badge && clanData.identity_guild_id) {
+                        clanBadgeEl.src = `https://cdn.discordapp.com/clan-badges/${clanData.identity_guild_id}/${clanData.badge}.png`;
+                    }
+                    if (clanTagTextEl) clanTagTextEl.textContent = clanData.tag;
+                } else {
+                    clanContainerEl.style.display = 'none';
+                }
             }
 
-            // 6. Update Badges (from Profile API - Comprehensive)
-            if (discordBadges && profileBadges) {
+            // 5. Avatar (Profile > Lanyard > japi.rest > default)
+            if (avatarEl) {
+                if (profile && profile.avatar) {
+                    avatarEl.src = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`;
+                } else if (lanyard && lanyard.discord_user && lanyard.discord_user.avatar) {
+                    avatarEl.src = `https://cdn.discordapp.com/avatars/${lanyard.discord_user.id}/${lanyard.discord_user.avatar}.png`;
+                } else if (japiData && japiData.avatar) {
+                    avatarEl.src = `https://cdn.discordapp.com/avatars/${japiData.id}/${japiData.avatar}.png`;
+                } else if (!avatarEl.getAttribute('data-loaded')) {
+                    avatarEl.src = `https://cdn.discordapp.com/embed/avatars/${parseInt(userId.slice(-1)) % 5}.png`;
+                }
+                avatarEl.setAttribute('data-loaded', 'true');
+            }
+
+            // 6. Badges
+            if (badgesEl) {
                 let badgeHtml = '';
-                profileBadges.forEach(badge => {
-                    const iconUrl = `https://cdn.discordapp.com/badge-icons/${badge.icon}.png`;
-                    badgeHtml += `<img src="${iconUrl}" class="badge-icon" alt="${badge.description}" title="${badge.description}">`;
-                });
-
-                // Nitro Check (if premium_type > 0 in profile data)
-                if (profileRes.premium_type > 0) {
+                if (profileBadges && Array.isArray(profileBadges)) {
+                    profileBadges.forEach(badge => {
+                        const iconUrl = `https://cdn.discordapp.com/badge-icons/${badge.icon}.png`;
+                        badgeHtml += `<img src="${iconUrl}" class="badge-icon" alt="${badge.description}" title="${badge.description}">`;
+                    });
+                }
+                if (profilePremium > 0 || japiHasNitro) {
                     badgeHtml += `<img src="https://cdn.jsdelivr.net/gh/mezotv/discord-badges@main/assets/discordnitro.svg" class="badge-icon" alt="Nitro" title="Nitro Subscriber">`;
                 }
-
-                discordBadges.innerHTML = badgeHtml;
+                badgesEl.innerHTML = badgeHtml;
             }
 
-            // 7. Update Activity (from Lanyard - Live)
-            if (discordActivity) {
-                const activity = lanyard.activities.find(a => a.type === 0) || lanyard.activities[0];
-                if (lanyard.listening_to_spotify && lanyard.spotify) {
-                    discordActivity.style.display = 'block';
-                    discordActivity.textContent = `Listening to Spotify`;
-                } else if (activity) {
-                    discordActivity.style.display = 'block';
-                    discordActivity.textContent = activity.state ? `${activity.name}: ${activity.state}` : `Playing ${activity.name}`;
+            // 7. Activity
+            if (activityEl) {
+                if (lanyard && lanyard.activities) {
+                    const activity = lanyard.activities.find(a => a.type === 0) || lanyard.activities[0];
+                    if (lanyard.listening_to_spotify && lanyard.spotify) {
+                        activityEl.style.display = 'block';
+                        activityEl.textContent = `Listening to Spotify`;
+                    } else if (activity) {
+                        activityEl.style.display = 'block';
+                        activityEl.textContent = activity.state ? `${activity.name}: ${activity.state}` : `Playing ${activity.name}`;
+                    } else {
+                        activityEl.style.display = 'none';
+                    }
                 } else {
-                    discordActivity.style.display = 'none';
+                    activityEl.style.display = 'none';
                 }
             }
+
         } catch (error) {
-            console.error("Discord Integration Error:", error);
+            console.error(`Error fetching data for ${userId}:`, error);
         }
     }
 
-    updateDiscordPresence();
-    setInterval(updateDiscordPresence, 15000);
+    function updateAllPresence() {
+        USERS_TO_MONITOR.forEach(user => {
+            fetchDiscordData(user.id, user.elements, user.fallbackName, user.fallbackUsername);
+        });
+    }
+
+    updateAllPresence();
+    setInterval(updateAllPresence, 15000);
 
     // --- Custom Cursor & Ocean Wave Trail ---
     const cursor = document.getElementById('custom-cursor');
