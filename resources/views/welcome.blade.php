@@ -21,8 +21,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
-            --accent: #a855f7;
-            --accent-glow: rgba(168, 85, 247, 0.4);
+            --accent: #ef4444;
+            --accent-glow: rgba(239, 68, 68, 0.4);
             --bg-dark: #000;
             --card-bg: rgba(0, 0, 0, 0.4);
             --card-border: rgba(255, 255, 255, 0.1);
@@ -65,14 +65,14 @@
             z-index: 10000;
         }
 
-        /* GIF Background */
-        .gif-bg {
+        /* Video Background */
+        .video-bg {
             position: fixed;
             inset: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
             z-index: -1;
-            background-image: url('{{ asset("GIF/1106.gif") }}');
-            background-size: cover;
-            background-position: center;
             filter: brightness(0.5) contrast(1.2);
         }
 
@@ -210,7 +210,7 @@
             background: rgba(0,0,0,0.6);
             padding: 6px 18px;
             border-radius: 50px; /* Smoother, pill-shaped edges */
-            border: 1px solid rgba(168, 85, 247, 0.4); /* Softer border color */
+            border: 1px solid rgba(239, 68, 68, 0.4); /* Softer border color */
             text-shadow: 0 0 5px var(--accent);
             backdrop-filter: blur(4px);
         }
@@ -385,7 +385,7 @@
             width: fit-content;
             z-index: 100;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
-                        0 0 20px rgba(168, 85, 247, 0.1);
+                        0 0 20px rgba(239, 68, 68, 0.1);
             transition: opacity 1s ease, visibility 1s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             opacity: 0;
             visibility: hidden;
@@ -397,9 +397,9 @@
         }
 
         .player-pill:hover {
-            border-color: rgba(168, 85, 247, 0.3);
+            border-color: rgba(239, 68, 68, 0.3);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6),
-                        0 0 30px rgba(168, 85, 247, 0.2);
+                        0 0 30px rgba(239, 68, 68, 0.2);
             transform: translateX(-50%) translateY(-5px);
         }
 
@@ -560,7 +560,7 @@
 
         .volume-pill:hover {
             width: 180px;
-            border-color: rgba(168, 85, 247, 0.3);
+            border-color: rgba(239, 68, 68, 0.3);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
@@ -571,8 +571,8 @@
             width: 24px;
             height: 24px;
             flex-shrink: 0;
-            color: #a855f7;
-            filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.4));
+            color: #ef4444;
+            filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.4));
         }
 
         .vol-slider-container {
@@ -605,9 +605,9 @@
             -webkit-appearance: none;
             width: 1px;
             height: 10px;
-            background: #a855f7;
+            background: #ef4444;
             cursor: pointer;
-            box-shadow: -200px 0 0 200px #a855f7;
+            box-shadow: -200px 0 0 200px #ef4444;
             border-radius: 0;
         }
 
@@ -646,7 +646,7 @@
             z-index: 999;
             pointer-events: none;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); /* Subtle purple glow */
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5); /* Subtle purple glow */
             font-weight: 500;
             opacity: 0;
             visibility: hidden;
@@ -666,12 +666,11 @@
 
     <div class="watermark">Made by Kian</div>
 
-    <div class="gif-bg"></div>
     <div class="overlay"></div>
 
-    <audio id="bg-audio" loop>
-        <source src="{{ asset('Vids/snaptik_7568500054340766984_v3.mp4') }}" type="video/mp4">
-    </audio>
+    <video id="bg-audio" class="video-bg" loop>
+        <source src="{{ asset('Vids/status.mp4') }}" type="video/mp4">
+    </video>
 
     <div class="volume-pill">
         <div class="vol-btn">
@@ -734,58 +733,6 @@
         </div>
     </div>
     
-    <div class="scroll-content">
-        <h2 class="section-title">BROS</h2>
-        
-        <div class="cards-row">
-            <!-- Additional Status Container 1 (User: 992264873453027350) -->
-            <div class="bio-card">
-                <div class="avatar-wrap">
-                    <img src="" id="bro1-avatar" class="avatar" alt="Avatar">
-                    <div class="status-dot" id="bro1-status-dot"></div>
-                </div>
-                <div class="user-info">
-                    <div class="username-row">
-                        <span class="username" id="bro1-global-name">Loading...</span>
-                        <span class="user-tag" id="bro1-tag"></span>
-                        <div class="clan-tag-container" id="bro1-clan-container">
-                            <img src="" class="clan-badge" id="bro1-clan-badge">
-                            <span class="clan-tag-text" id="bro1-clan-tag-text"></span>
-                        </div>
-                    </div>
-                    <div class="badges-container" id="bro1-badges">
-                        <!-- Badges -->
-                    </div>
-                    <div class="status-text" id="bro1-status-text">Loading...</div>
-                    <div class="activity-display" id="bro1-activity"></div>
-                </div>
-            </div>
-
-            <!-- Additional Status Container 2 (User: 717415880103034891) -->
-            <div class="bio-card">
-                <div class="avatar-wrap">
-                    <img src="" id="bro2-avatar" class="avatar" alt="Avatar">
-                    <div class="status-dot" id="bro2-status-dot"></div>
-                </div>
-                <div class="user-info">
-                    <div class="username-row">
-                        <span class="username" id="bro2-global-name">Loading...</span>
-                        <span class="user-tag" id="bro2-tag"></span>
-                        <div class="clan-tag-container" id="bro2-clan-container">
-                            <img src="" class="clan-badge" id="bro2-clan-badge">
-                            <span class="clan-tag-text" id="bro2-clan-tag-text"></span>
-                        </div>
-                    </div>
-                    <div class="badges-container" id="bro2-badges">
-                        <!-- Badges -->
-                    </div>
-                    <div class="status-text" id="bro2-status-text">Loading...</div>
-                    <div class="activity-display" id="bro2-activity"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
 
     <div class="player-pill" id="player-pill">
         <div class="player-art-wrap">
@@ -793,7 +740,7 @@
         </div>
         <div class="player-content">
             <div class="track-info-row">
-                <span class="track-name">Dreamin</span>
+                <span class="track-name">She goes by.</span>
                 <div class="track-time-wrap">
                     <span class="track-time" id="current-time">0:00</span>
                     <span class="track-time" style="opacity: 0.3; margin: 0 4px;">/</span>

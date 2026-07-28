@@ -176,40 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 clanBadge: 'discord-clan-badge',
                 clanTagText: 'discord-clan-tag-text'
             }
-        },
-        {
-            id: '992264873453027350', // Bro 1
-            fallbackName: '₱',
-            fallbackUsername: '116.65.36.216',
-            elements: {
-                avatar: 'bro1-avatar',
-                statusDot: 'bro1-status-dot',
-                statusText: 'bro1-status-text',
-                activity: 'bro1-activity',
-                globalName: 'bro1-global-name',
-                tag: 'bro1-tag',
-                badges: 'bro1-badges',
-                clanContainer: 'bro1-clan-container',
-                clanBadge: 'bro1-clan-badge',
-                clanTagText: 'bro1-clan-tag-text'
-            }
-        },
-        {
-            id: '687983215880699905', // Bro 2
-            fallbackName: 'Bro 2',
-            fallbackUsername: '687983215880699905',
-            elements: {
-                avatar: 'bro2-avatar',
-                statusDot: 'bro2-status-dot',
-                statusText: 'bro2-status-text',
-                activity: 'bro2-activity',
-                globalName: 'bro2-global-name',
-                tag: 'bro2-tag',
-                badges: 'bro2-badges',
-                clanContainer: 'bro2-clan-container',
-                clanBadge: 'bro2-clan-badge',
-                clanTagText: 'bro2-clan-tag-text'
-            }
         }
     ];
 
@@ -452,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Draw the wave trail
-        const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#a855f7';
+        const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444';
 
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
