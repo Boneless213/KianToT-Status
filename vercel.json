@@ -2,7 +2,8 @@
     "version": 2,
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.7.1"
+            "runtime": "vercel-php@0.7.1",
+            "excludeFiles": "public/**"
         }
     },
     "routes": [
@@ -15,6 +16,12 @@
             "dest": "/api/index.php"
         }
     ],
+    "build": {
+        "env": {
+            "VERCEL_SUPPORT_LARGE_FUNCTIONS": "1",
+            "VERCEL_ANALYZE_BUILD_OUTPUT": "1"
+        }
+    },
     "env": {
         "APP_CONFIG_CACHE": "/tmp/storage/framework/cache/config.php",
         "APP_EVENTS_CACHE": "/tmp/storage/framework/cache/events.php",
